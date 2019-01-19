@@ -1,0 +1,17 @@
+database.database=MYSQL
+database.driverClassName = com.mysql.jdbc.Driver
+database.password        = 123456
+database.show_sql        = true
+database.url             = jdbc:mysql://localhost:3306/card
+database.username        = root
+
+#sql
+sql.insert = insert into test(content,datetime,mark) values(?,?,'N')
+sql.update = update test set mark=? where content = ?
+sql.generateSerialNumber = select content from test where content like ? order by content desc;
+
+#Serial
+serial.length = 4
+serial.increase = 1
+M2 = A
+
