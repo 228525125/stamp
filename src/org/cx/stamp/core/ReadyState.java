@@ -19,6 +19,12 @@ public class ReadyState extends AbstractState<Machine> {
 		
 		return state;
 	}
+	
+	@Override
+	public Integer getCode() {
+		// TODO Auto-generated method stub
+		return Code_ReadyState;
+	}
 
 	@Override
 	public void execute(Machine t) {

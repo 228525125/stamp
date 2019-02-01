@@ -31,15 +31,18 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JLabel;
 
+import org.cx.stamp.core.AbstractState;
 import org.cx.stamp.core.Machine;
 import org.cx.stamp.tools.JDBCService;
 import org.cx.stamp.tools.Logger;
 import org.cx.stamp.tools.PropertiesUtil;
+
 import javax.swing.BoxLayout;
 
 public class MainFrame extends JFrame {
@@ -91,6 +94,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 811, 437);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -135,25 +139,29 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				beginButton.setEnabled(true);
-				stopButton.setEnabled(false);
-				setButton.setEnabled(true);
-				queryButton.setEnabled(true);
-				
-				lock = false;
-				
-				clearStampContent();
-				selectTextField.setText("");
-				stampTextField.setText("");
-				
-				machine.stop();
+				if(AbstractState.Code_CompleteState.equals(machine.getCurrentState().getCode()) 
+				|| AbstractState.Code_IncorrectFormatState.equals(machine.getCurrentState().getCode())
+				|| AbstractState.Code_WaitState.equals(machine.getCurrentState().getCode())
+				|| AbstractState.Code_OvertimeState.equals(machine.getCurrentState().getCode())){
+					beginButton.setEnabled(true);
+					stopButton.setEnabled(false);
+					setButton.setEnabled(true);
+					queryButton.setEnabled(true);
+					
+					lock = false;
+					
+					clearStampContent();
+					selectTextField.setText("");
+					stampTextField.setText("");
+					
+					machine.stop();
+				}
 			}
 		});
 		contentPane.add(stopButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 73, 214, 313);
-        
 		
 		textArea = new JTextArea();
 		textArea.setForeground(Color.GREEN);
@@ -203,6 +211,17 @@ public class MainFrame extends JFrame {
 				try {
 					List<Map<String, Object>> ret = JDBCService.query_rwdh(text);
 					DefaultTableModel tm = (DefaultTableModel) table.getModel();
+					
+					/*
+					 * 清空表格
+					 */
+					for(int i=0;i<tm.getRowCount();i++){
+						for(int j=0;j<tm.getColumnCount();j++){
+							tm.setValueAt(null, i, j);
+						}
+						tm.removeRow(i);
+					}
+					
 					if(ret.isEmpty()){
 						tm.setRowCount(0);
 					}else{
@@ -214,9 +233,32 @@ public class MainFrame extends JFrame {
 					
 					for(int i=0;i<ret.size();i++){
 						Map<String, Object> bean = ret.get(i);
-						for(int j=0;j<fields.length;j++){
-							table.setValueAt(bean.get(fields[j]), i, j);
+						
+						String sqlData = "任务单"+text+"查询结果：\r\n";
+						Iterator<String> iterator = bean.keySet().iterator();
+						while(iterator.hasNext()){
+							String key = iterator.next();
+							sqlData += bean.get(key);
+							if(iterator.hasNext())
+								sqlData += "\r\n";
 						}
+						
+						printMessage(sqlData);
+						Logger.info("数据库："+sqlData);
+						printMessage("--------------------------------");
+						
+						String info = "";
+						
+						for(int j=0;j<fields.length;j++){
+							Object value = bean.get(fields[j]);
+							table.setValueAt(value, i, j);
+							
+							info += value;
+							if((j+1)<fields.length)
+								info += ",";
+						}
+						
+						Logger.info("表格："+info);
 					}
 					
 					table.clearSelection();
@@ -454,9 +496,9 @@ public class MainFrame extends JFrame {
 	
 	public void printMessage(String msg) {
 		String text = textArea.getText();
-		msg += "\r\n";
-		msg += text;
-		textArea.setText(msg);
+		text += "\r\n";
+		text += msg;
+		textArea.setText(text);
 	}
 	
 	public String getModel() {

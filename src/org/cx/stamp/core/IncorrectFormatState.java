@@ -20,6 +20,12 @@ public class IncorrectFormatState extends AbstractState<Machine> {
 	}
 	
 	@Override
+	public Integer getCode() {
+		// TODO Auto-generated method stub
+		return AbstractState.Code_IncorrectFormatState;
+	}
+	
+	@Override
 	public void execute(Machine t) {
 		// TODO Auto-generated method stub
 		SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

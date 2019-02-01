@@ -60,6 +60,14 @@ public class Machine {
 	}
 	
 	/**
+	 * 当前状态
+	 * @return
+	 */
+	public AbstractState<Machine> getCurrentState() {
+		return getStateMachine().getCurrentState();
+	}
+	
+	/**
 	 * 是否刻印机等待数据
 	 * @return
 	 */

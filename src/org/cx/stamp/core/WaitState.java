@@ -12,6 +12,12 @@ public class WaitState extends AbstractState<Machine> {
 	}
 	
 	@Override
+	public Integer getCode() {
+		// TODO Auto-generated method stub
+		return Code_WaitState;
+	}
+	
+	@Override
 	public void execute(Machine t) {
 		// TODO Auto-generated method stub
 		if(t.isReady() && !ReadyState.getInstance().equals(t.getPreviousState())){

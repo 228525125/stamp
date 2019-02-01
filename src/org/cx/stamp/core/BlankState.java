@@ -18,6 +18,12 @@ public class BlankState extends AbstractState<Machine> {
 	}
 	
 	@Override
+	public Integer getCode() {
+		// TODO Auto-generated method stub
+		return AbstractState.Code_BlankState;
+	}
+	
+	@Override
 	public void execute(Machine t) {
 		// TODO Auto-generated method stub
 		t.changeState(WaitState.getInstance());
