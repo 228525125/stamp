@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JLabel;
 
@@ -206,7 +207,9 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				String text = textField.getText();				
+				String text = textField.getText();
+				
+				table.clearSelection();
 				
 				try {
 					List<Map<String, Object>> ret = JDBCService.query_rwdh(text);
@@ -222,15 +225,24 @@ public class MainFrame extends JFrame {
 						tm.removeRow(i);
 					}
 					
-					if(ret.isEmpty()){
-						tm.setRowCount(0);
-					}else{
-						tm.setRowCount(ret.size());
-					}
+					tm.setRowCount(0);
 					
 					String fieldString = PropertiesUtil.getConfigure("sql.query.fieldName");
 					String [] fields = fieldString.split(",");
+					Vector<String> columnName = new Vector<String>();
+					columnName.add("任务单号");
+					columnName.add("规格");
+					columnName.add("炉批号");
+					columnName.add("材质");
+					columnName.add("压力");
+					columnName.add("温度");
+					columnName.add("出厂编号");
 					
+					Vector rows = new Vector();
+					
+					/*
+					 * 生成数据
+					 */
 					for(int i=0;i<ret.size();i++){
 						Map<String, Object> bean = ret.get(i);
 						
@@ -244,24 +256,46 @@ public class MainFrame extends JFrame {
 						}
 						
 						printMessage(sqlData);
-						Logger.info("数据库："+sqlData);
+						Logger.info("数据库查询结果："+sqlData);
 						printMessage("--------------------------------");
 						
 						String info = "";
-						
+						Vector row = new Vector();
 						for(int j=0;j<fields.length;j++){
 							Object value = bean.get(fields[j]);
-							table.setValueAt(value, i, j);
+							//table.setValueAt(value, i, j);
+							row.add(value);
 							
 							info += value;
 							if((j+1)<fields.length)
 								info += ",";
 						}
+						rows.add(row);
 						
-						Logger.info("表格："+info);
+						Logger.info("插入表格("+i+")行数据："+info);
 					}
 					
-					table.clearSelection();
+					tm.setColumnCount(columnName.size());       //设置列数
+					tm.setRowCount(rows.size());                //设置行数
+					
+					tm.setDataVector(rows, columnName);
+					
+					/*
+					 * 验证表格数据
+					 */
+					String tableData = "";
+					for(int i=0;i<table.getRowCount();i++){
+						tableData += ""+i+"行：";
+						for(int j=0;j<table.getColumnCount();j++){
+							tableData += table.getValueAt(i, j);
+							
+							if((j+1)<table.getColumnCount())
+								tableData +=",";
+						}
+						if((i+1)<table.getRowCount())
+							tableData += "\n";
+					}
+					Logger.info("最终表格数据："+tableData);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					printMessage("数据库连接异常！\r\n请检查网络，然后重新启动应用程序！\r\n原因："+e.getMessage());
@@ -309,6 +343,7 @@ public class MainFrame extends JFrame {
 				
 				if(!lock && !Integer.valueOf(-1).equals(selectedRow)){
 					
+					String log = "选择行："+selectedRow+"\n";
 					/*
 					 * 全部清空，保证各项数据一致
 					 */
@@ -319,9 +354,11 @@ public class MainFrame extends JFrame {
 					if(null!=billNo){
 						selectTextField.setText(billNo.toString());
 						MainFrame.this.billNo = billNo.toString();
+						log += "billNo-"+billNo.toString()+",";
 					}else{
 						selectTextField.setText("");
 						MainFrame.this.billNo = null;
+						log += "billNo-null,";
 					}
 					
 					Integer modelIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.model"));
@@ -329,25 +366,31 @@ public class MainFrame extends JFrame {
 					if(null!=model){
 						stampTextField.setText(model.toString());
 						MainFrame.this.model = model.toString();
+						log += "model-"+model.toString()+",";
 					}else{
 						stampTextField.setText("");
 						MainFrame.this.model = null;
+						log += "model-null,";
 					}
 					
 					Integer batchNoIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.batchNo"));
 					Object batchNo = table.getValueAt(selectedRow, batchNoIndex);
 					if(null!=batchNo){
 						MainFrame.this.batchNo = batchNo.toString();
+						log += "batchNo-"+batchNo.toString()+",";
 					}else{
 						MainFrame.this.batchNo = null;
+						log += "batchNo-null,";
 					}
 					
 					Integer materialIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.material"));
 					Object material = table.getValueAt(selectedRow, materialIndex);
 					if(null!=material){
 						MainFrame.this.material = material.toString();
+						log += "material-"+material.toString()+",";
 					}else{
 						MainFrame.this.material = null;
+						log += "material-null,";
 					}
 					
 					
@@ -355,28 +398,35 @@ public class MainFrame extends JFrame {
 					Object pressure = table.getValueAt(selectedRow, pressureIndex);
 					if(null!=pressure){
 						MainFrame.this.pressure = pressure.toString();
+						log += "pressure-"+pressure.toString()+",";
 					}else{
 						MainFrame.this.pressure = null;
+						log += "pressure-null,";
 					}
 					
 					Integer temperatureIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.temperature"));
 					Object temperature = table.getValueAt(selectedRow, temperatureIndex);
 					if(null!=temperature){
 						MainFrame.this.temperature = temperature.toString();
+						log += "temperature-"+temperature.toString()+",";
 					}else{
 						MainFrame.this.temperature = null;
+						log += "temperature-null,";
 					}
 					
 					Integer serialTypeIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.serialType"));
 					Object serialType = table.getValueAt(selectedRow, serialTypeIndex);
 					if(null!=serialType){
 						MainFrame.this.serialType = serialType.toString();
+						log += "serialType-"+serialType.toString();
 					}else{
 						MainFrame.this.serialType = null;
+						log += "serialType-null";
 					}
 					
 					serialTextField.setText("");
 					
+					Logger.info("选择表格行数据："+log);
 				}
 			}
 		});
