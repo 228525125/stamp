@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
 	private Machine machine = new Machine();
 	private JPanel panel_1;
 	private JTextField selectTextField;     //任务单文本框
-	private JTextField stampTextField;      //刻印内容文本框
+	private JTextField stampTextField;      //规格型号文本框
 	private JTextField serialTextField;     //当前刻印的出厂编号
 	
 	private String billNo = null;
@@ -104,6 +104,13 @@ public class MainFrame extends JFrame {
 		beginButton = new JButton("\u5F00\u59CB");
 		beginButton.setFont(new Font("宋体", Font.PLAIN, 12));
 		beginButton.setBounds(10, 10, 69, 21);
+		
+		//-------------------------开始按钮事件---------------------------------
+		/*
+		 * 首先判断是否选择了任务单；
+		 * 再判断选择的任务单的产品规格是否符合要求；
+		 * 再区分横川阀组和其它产品来选择编号生成规则，注，生成规则在数据库完成，这里只判断是否可以开始启动状态机
+		 */
 		beginButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -111,10 +118,10 @@ public class MainFrame extends JFrame {
 				// TODO Auto-generated method stub
 				String model = stampTextField.getText();
 				String billNo = selectTextField.getText();
+				
 				/*
 				 * 如果是横川阀组规格型号以CV开头，那么要验证所有信息的完整性，如果是其它品种则只需要任务单号
 				 */
-				
 				if("".equals(billNo)){
 					JOptionPane.showMessageDialog(null, "请选择一张任务单！", null, JOptionPane.INFORMATION_MESSAGE);
 					return ;
@@ -163,6 +170,13 @@ public class MainFrame extends JFrame {
 		stopButton.setFont(new Font("宋体", Font.PLAIN, 12));
 		stopButton.setBounds(10, 41, 68, 21);
 		stopButton.setEnabled(false);
+		
+		//-------------------------停止按钮事件------------------------------
+		/*
+		 * 只有当系统处于“完成”、“报错”、“等待”、“超时”这几种状态时，才能使用按钮；
+		 * 清空选择的数据；
+		 * 停止状态机；
+		 */
 		stopButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -230,6 +244,12 @@ public class MainFrame extends JFrame {
 		
 		queryButton = new JButton("\u67E5\u8BE2");
 		queryButton.setBounds(692, 24, 93, 23);
+		
+		//-------------------------查询按钮事件----------------------------
+		/*
+		 * 清空表格数据；
+		 * 从数据库获取数据重新填充表格；
+		 */
 		queryButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -353,6 +373,11 @@ public class MainFrame extends JFrame {
 		ListSelectionModel selectionModel = table.getSelectionModel();
 		selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
+		//-------------------------选择行事件----------------------------
+		/*
+		 * 清空缓存的各项数据；
+		 * 然后从行数据中取出规定数据进行保存；
+		 */
 		selectionModel.addListSelectionListener(new ListSelectionListener() {
 			
 			@Override

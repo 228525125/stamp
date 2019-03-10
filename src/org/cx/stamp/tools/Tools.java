@@ -30,6 +30,21 @@ public class Tools {
 		FileHandle.create(PropertiesUtil.getConfigure("file.workPath"), PropertiesUtil.getConfigure("file.status"), "");
 	}
 	
+	/**
+	 * 格式化SN，非横川阀组，则生成url格式的字符串
+	 * @param sn
+	 * @return
+	 */
+	public static String formatSN(String sn) {
+		String result = null;
+		if("JH".equals(sn.substring(0, 2))){
+			result = PropertiesUtil.getConfigure("product.url")+sn;
+		}else{
+			result = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
+		}
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		
 	}

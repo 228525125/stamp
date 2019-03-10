@@ -119,6 +119,10 @@ public class Machine {
 		return PropertiesUtil.getConfigure("file.status.ok").equals(str);
 	}
 	
+	/**
+	 * 生成新的出厂编号，并显示在界面上，注意，界面上的出厂编号格式并不是刻印的编号格式
+	 * @return
+	 */
 	public String generateStampContent() {
 		
 		this.stampContent = null;
@@ -151,7 +155,7 @@ public class Machine {
 		String M4 = "\r\nM4="+"HT."+getBatchNo();
 		String sn = getSerialNumberText();
 		//sn = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
-		sn = formatSN(sn);
+		sn = Tools.formatSN(sn);
 		String M5 = "\r\nM5="+sn;
 		this.stampContent = content + M1 + M2 + M3 + M4 + M5;
 		
@@ -246,21 +250,6 @@ public class Machine {
 	
 	public void doStopButton() {
 		this.frame.doStopButton();
-	}
-	
-	/**
-	 * 格式化SN
-	 * @param sn
-	 * @return
-	 */
-	private String formatSN(String sn) {
-		String result = null;
-		if("JH".equals(sn.substring(0, 2))){
-			result = PropertiesUtil.getConfigure("product.url")+sn;
-		}else{
-			result = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
-		}
-		return result;
 	}
 	
 	private Thread getThread() {
