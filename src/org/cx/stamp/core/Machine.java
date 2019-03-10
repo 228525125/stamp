@@ -150,7 +150,8 @@ public class Machine {
 		String M3 = "\r\nM3="+getMaterial();
 		String M4 = "\r\nM4="+"HT."+getBatchNo();
 		String sn = getSerialNumberText();
-		sn = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
+		//sn = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
+		sn = formatSN(sn);
 		String M5 = "\r\nM5="+sn;
 		this.stampContent = content + M1 + M2 + M3 + M4 + M5;
 		
@@ -247,6 +248,21 @@ public class Machine {
 		this.frame.doStopButton();
 	}
 	
+	/**
+	 * 格式化SN
+	 * @param sn
+	 * @return
+	 */
+	private String formatSN(String sn) {
+		String result = null;
+		if("JH".equals(sn.substring(0, 2))){
+			result = PropertiesUtil.getConfigure("product.url")+sn;
+		}else{
+			result = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
+		}
+		return result;
+	}
+	
 	private Thread getThread() {
 		if(null==thread || !thread.isAlive()){
 			thread = new Thread(new Runnable() {
@@ -273,5 +289,8 @@ public class Machine {
 	public static void main(String[] args) {
 		String str = "CT005MMA01";
 		System.out.println(str.substring(0, 5)+" "+str.substring(5, 8)+" "+str.substring(8, 10));
+		
+		str = "JH001NAA01";
+		System.out.println(str.substring(0, 2));
 	}
 }

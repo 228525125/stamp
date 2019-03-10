@@ -111,7 +111,35 @@ public class MainFrame extends JFrame {
 				// TODO Auto-generated method stub
 				String model = stampTextField.getText();
 				String billNo = selectTextField.getText();
-				if("".equals(model)){
+				/*
+				 * 如果是横川阀组规格型号以CV开头，那么要验证所有信息的完整性，如果是其它品种则只需要任务单号
+				 */
+				
+				if("".equals(billNo)){
+					JOptionPane.showMessageDialog(null, "请选择一张任务单！", null, JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}
+				
+				if("".equals(model) || model.length()<2){
+					JOptionPane.showMessageDialog(null, "刻印内容为空，请重新选择任务单！", null, JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}
+				
+				if("CV".equals(model.substring(0, 2)) && !validateStampContent()){
+					JOptionPane.showMessageDialog(null, "刻印内容不完整，请检查！", null, JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}else{
+					machine.start();
+					beginButton.setEnabled(false);
+					stopButton.setEnabled(true);
+					setButton.setEnabled(false);
+					queryButton.setEnabled(false);
+					stampTextField.setEditable(false);
+					
+					lock = true;
+				}
+				
+				/*if("".equals(model)){
 					JOptionPane.showMessageDialog(null, "刻印内容为空，请重新选择任务单！", null, JOptionPane.INFORMATION_MESSAGE);
 				}else if("".equals(billNo)){
 					JOptionPane.showMessageDialog(null, "请选择一张任务单！", null, JOptionPane.INFORMATION_MESSAGE);
@@ -126,7 +154,7 @@ public class MainFrame extends JFrame {
 					stampTextField.setEditable(false);
 					
 					lock = true;
-				}
+				}*/
 			}
 		});
 		contentPane.add(beginButton);
@@ -230,13 +258,18 @@ public class MainFrame extends JFrame {
 					String fieldString = PropertiesUtil.getConfigure("sql.query.fieldName");
 					String [] fields = fieldString.split(",");
 					Vector<String> columnName = new Vector<String>();
-					columnName.add("任务单号");
+					String [] columnNames = PropertiesUtil.getConfigure("table.columnNames").split(",");
+					for(String cn : columnNames){
+						columnName.add(cn);
+					}
+					
+					/*columnName.add("任务单号");
 					columnName.add("规格");
 					columnName.add("炉批号");
 					columnName.add("材质");
 					columnName.add("压力");
 					columnName.add("温度");
-					columnName.add("出厂编号");
+					columnName.add("出厂编号");*/
 					
 					Vector rows = new Vector();
 					
@@ -263,7 +296,6 @@ public class MainFrame extends JFrame {
 						Vector row = new Vector();
 						for(int j=0;j<fields.length;j++){
 							Object value = bean.get(fields[j]);
-							//table.setValueAt(value, i, j);
 							row.add(value);
 							
 							info += value;
@@ -311,24 +343,11 @@ public class MainFrame extends JFrame {
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		table = new JTable();
-		String[] columnNames = new String[]{"任务单号","规格","炉批号","材质","压力","温度","出厂编号"}; 
+		String[] columnNames = PropertiesUtil.getConfigure("table.columnNames").split(","); 
 		String[][] rowData = new String[][]{
-				//{"WORK061002","AM7001WH","18M05","06.07.0028","插入筒","xxx","20"},
-				//{"WORK061003","AM7001WI","18M05","06.07.0028","插入筒","xxx","20"},
-				//{"WORK061004","AM7001WN","18M05","06.07.0028","插入筒","xxx","20"}
 		};
 		TableModel tm = new DefaultTableModel(rowData, columnNames);
 		table.setModel(tm);
-		
-		/*table.setAutoscrolls(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		TableColumn rwColumn = table.getColumnModel().getColumn(0);
-		TableColumn thColumn = table.getColumnModel().getColumn(1);
-		TableColumn pcColumn = table.getColumnModel().getColumn(2);
-		rwColumn.setWidth(200);
-		thColumn.setWidth(150);
-		pcColumn.setWidth(100);*/
 		
 		//表格选择器
 		ListSelectionModel selectionModel = table.getSelectionModel();
