@@ -132,36 +132,15 @@ public class MainFrame extends JFrame {
 					return ;
 				}
 				
-				if("CV".equals(model.substring(0, 2)) && !validateStampContent()){
+				if("CYS".equals(PropertiesUtil.getConfigure("stamp.model")) && "CV".equals(model.substring(0, 2)) && validateStampContent()){
+					clickBeginButton();
+				} else if("JH".equals(PropertiesUtil.getConfigure("stamp.model"))){
+					clickBeginButton();
+				}
+				else{
 					JOptionPane.showMessageDialog(null, "刻印内容不完整，请检查！", null, JOptionPane.INFORMATION_MESSAGE);
 					return ;
-				}else{
-					machine.start();
-					beginButton.setEnabled(false);
-					stopButton.setEnabled(true);
-					setButton.setEnabled(false);
-					queryButton.setEnabled(false);
-					stampTextField.setEditable(false);
-					
-					lock = true;
 				}
-				
-				/*if("".equals(model)){
-					JOptionPane.showMessageDialog(null, "刻印内容为空，请重新选择任务单！", null, JOptionPane.INFORMATION_MESSAGE);
-				}else if("".equals(billNo)){
-					JOptionPane.showMessageDialog(null, "请选择一张任务单！", null, JOptionPane.INFORMATION_MESSAGE);
-				}else if(!validateStampContent()){
-					JOptionPane.showMessageDialog(null, "刻印内容不完整，请检查！", null, JOptionPane.INFORMATION_MESSAGE);
-				}else{
-					machine.start();
-					beginButton.setEnabled(false);
-					stopButton.setEnabled(true);
-					setButton.setEnabled(false);
-					queryButton.setEnabled(false);
-					stampTextField.setEditable(false);
-					
-					lock = true;
-				}*/
 			}
 		});
 		contentPane.add(beginButton);
@@ -667,13 +646,24 @@ public class MainFrame extends JFrame {
 		this.serialType = null;
 	}
 	
-	/*public void clickStopButton() {
+	private void clickBeginButton() {
+		machine.start();
+		beginButton.setEnabled(false);
+		stopButton.setEnabled(true);
+		setButton.setEnabled(false);
+		queryButton.setEnabled(false);
+		stampTextField.setEditable(false);
+		
+		lock = true;
+	}
+	
+	public void clickStopButton() {
 		beginButton.setEnabled(true);
 		stopButton.setEnabled(false);
 		setButton.setEnabled(true);
 		
 		lock = false;
-	}*/
+	}
 	
 	private static class __Tmp {
 		private static void __tmp() {
