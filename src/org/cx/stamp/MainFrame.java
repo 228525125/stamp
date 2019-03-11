@@ -165,18 +165,7 @@ public class MainFrame extends JFrame {
 				|| AbstractState.Code_IncorrectFormatState.equals(machine.getCurrentState().getCode())
 				|| AbstractState.Code_WaitState.equals(machine.getCurrentState().getCode())
 				|| AbstractState.Code_OvertimeState.equals(machine.getCurrentState().getCode())){
-					beginButton.setEnabled(true);
-					stopButton.setEnabled(false);
-					setButton.setEnabled(true);
-					queryButton.setEnabled(true);
-					
-					lock = false;
-					
-					clearStampContent();
-					selectTextField.setText("");
-					stampTextField.setText("");
-					
-					machine.stop();
+					clickStopButton();
 				}
 			}
 		});
@@ -657,12 +646,19 @@ public class MainFrame extends JFrame {
 		lock = true;
 	}
 	
-	public void clickStopButton() {
+	private void clickStopButton() {
 		beginButton.setEnabled(true);
 		stopButton.setEnabled(false);
 		setButton.setEnabled(true);
+		queryButton.setEnabled(true);
 		
 		lock = false;
+		
+		clearStampContent();
+		selectTextField.setText("");
+		stampTextField.setText("");
+		
+		machine.stop();
 	}
 	
 	private static class __Tmp {
