@@ -72,6 +72,7 @@ public class MainFrame extends JFrame {
 	private String pressure = null;
 	private String temperature = null;
 	private String serialType = null;
+	private String edition = null;
 
 	/**
 	 * Launch the application.
@@ -436,6 +437,16 @@ public class MainFrame extends JFrame {
 						log += "serialType-null";
 					}
 					
+					Integer editionIndex = Integer.valueOf(PropertiesUtil.getConfigure("sql.query.field.edition"));
+					Object edition = table.getValueAt(selectedRow, editionIndex);
+					if(null!=edition){
+						MainFrame.this.edition = edition.toString();
+						log += "edition-"+edition.toString();
+					}else{
+						MainFrame.this.edition = null;
+						log += "edition-null";
+					}
+					
 					serialTextField.setText("");
 					
 					Logger.info("选择表格行数据："+log);
@@ -595,6 +606,10 @@ public class MainFrame extends JFrame {
 		this.serialTextField.setText(text);
 	}
 	
+	public String getEdition(){
+		return edition;
+	}
+	
 	/**
 	 * 出厂编号，例如：CT005XXXXX
 	 * @return
@@ -633,6 +648,7 @@ public class MainFrame extends JFrame {
 		this.pressure = null;
 		this.temperature = null;
 		this.serialType = null;
+		this.edition = null;
 	}
 	
 	private void clickBeginButton() {

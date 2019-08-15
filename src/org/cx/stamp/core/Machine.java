@@ -136,7 +136,7 @@ public class Machine {
 				return null;
 			}
 			this.serialNumber = serialNumber;
-			setSerialNumberText(getSerialType()+serialNumber);
+			setSerialNumberText(getSerialType()+serialNumber+getEdition());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			String msg = "数据库连接异常！\r\n"
@@ -234,6 +234,10 @@ public class Machine {
 	
 	public String getSerialNumber() {
 		return this.serialNumber;
+	}
+	
+	public String getEdition(){
+		return this.frame.getEdition();
 	}
 	
 	/**
