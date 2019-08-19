@@ -49,7 +49,7 @@ public class ReadyState extends AbstractState<Machine> {
 			t.printMessage(msg);
 			
 			try {
-				JDBCService.insert(PropertiesUtil.getConfigure("sql.insert"), t.getSerialNumberText(), datetime, t.getBillNo());
+				JDBCService.insert(PropertiesUtil.getConfigure("sql.insert"), t.getSerialNumberText(), datetime, t.getBillNo(), t.getSerialNumber());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				t.printMessage("数据库连接异常！\r\n请检查网络，然后重新启动应用程序！\r\n原因："+e.getMessage());

@@ -40,12 +40,13 @@ public class Tools {
 		if("JH".equals(sn.substring(0, 2))){
 			result = PropertiesUtil.getConfigure("product.url")+sn;
 		}else{
-			result = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, 10);  //调整格式
+			result = sn.substring(0, 5)+" "+sn.substring(5, 8)+" "+sn.substring(8, sn.length());  //调整格式
 		}
 		return result;
 	}
 	
 	public static void main(String[] args) {
-		
+		String str = "123123";
+		System.out.println(str.substring(0, str.length()-1));
 	}
 }

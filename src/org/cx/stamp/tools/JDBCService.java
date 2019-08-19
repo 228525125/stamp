@@ -67,13 +67,14 @@ public class JDBCService {
 		return ret;
 	}
 	
-	public static void insert(String sql, String content, String datetime, String billNo) throws SQLException {
+	public static void insert(String sql, String content, String datetime, String billNo, String sn) throws SQLException {
 		
 		Connection conn = getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, content);
 		ps.setString(2, datetime);
 		ps.setString(3, billNo);
+		ps.setString(4, sn);
 		ps.execute();
 		
 		ps.close();
