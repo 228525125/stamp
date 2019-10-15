@@ -44,7 +44,7 @@ public class CompleteState extends AbstractState<Machine> {
 		try {
 			List<String> params = new ArrayList<String>();
 			params.add(PropertiesUtil.getConfigure("serial.confirm"));
-			params.add(t.getSerialNumber());
+			params.add(t.getSerialNumberText());
 			JDBCService.update(PropertiesUtil.getConfigure("sql.update"), params);			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
